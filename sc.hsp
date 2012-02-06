@@ -1,0 +1,299 @@
+#include "mod_wrun.hsp"
+#epack "RSoD.gif"
+#packopt name "ErrorSaver"
+#packopt type 2
+#packopt hide 1
+#uselib "user32.dll"
+#func SetTimer "SetTimer" sptr,sptr,sptr,sptr
+#func CharLower "CharLowerA" sptr
+#define WM_TIMER	$00000113
+
+// --- スクリーンセーバーの名前 ---
+	sctitle ="ErrorSaver"
+// --------------------------------
+
+	//二重起動防止
+	if wrun() == 0{
+		end
+	}
+	onexit *owari
+
+	prm = dir_cmdline    ;パラメータ取得
+	getstr dm, prm, 0, '/'
+	prm = strmid(prm, strsize, 1)
+	CharLower varptr(prm)
+#ifdef _debug
+	if prm == "" : prm = "s"
+#else
+	if prm == "" : prm = "c"
+#endif
+	switch prm
+    
+		case "c"
+			// --- 設定 ---
+			
+				dialog "このスクリーンセーバーには、設定できるオプションがありません。", 1, sctitle : swbreak
+				sx = 320
+				sy = 200
+				screen 0, sx, sy, 6, ginfo_dispx-sx>>1, ginfo_dispy-sy>>1
+				title sctitle
+				syscolor 15 : boxf
+				color : boxf 0, 0, sx, 60
+				color 255, 255, 255 : pos 10 , 10 : mes "スクリーンセーバー\n Ver 1.00 	2009 / 01 / 01"
+				gsel 0, 1
+				stop
+
+			// ------------
+			swbreak
+			
+		case "p"
+		case "s"
+			//フルスクリーン
+			dx = ginfo_dispx		//画面横サイズ
+			dy = ginfo_dispy		//画面縦サイズ
+			ms = 10					//スクリーンセーバーの描画間隔（ミリ秒）
+			thrm = 5				//マウスを動かしたと感じ取る閾値
+
+			buffer 2, 640, 480
+			color ,,130 : boxf : color 255, 255, 255
+			font "Courier", 12
+			pos 0, 0 : mes {"\n
+			A problem has been detected and windows has been shut down to prevent damage
+			to your computer.
+			
+			The problem seems to be caused by the following file: SPCMDCON.SYS
+			\n
+			PAGE_FAULT_IN_NONPAGED_AREA
+			
+			If this is the first time you've seen this stop error screen,
+			restart your computer. If this screen appears again, follow
+			these steps:
+			
+			Check to make sure any new hardware or software is properly installed.
+			If this is a new installation, ask your hardware or software manufacturer
+			for any windows updates you might need.
+			
+			If problems continue, or remove any newly installed hardware
+			or software. Disable BIOS memory options such as caching or shadowing.
+			If you need to use Safe Mode to remove or disable components,restart
+			your computer, press F8 to select Advanced Startup Options, and then
+			select Safe Mode.
+
+			Technical infomation:
+
+			*** STOP: 0x00000050 (0xFD3094C2,0x00000001,0xFBFE7617,0x00000000)
+
+
+			***   SPCMDCON.SYS - Address FBFE7617 base at FBFE5000, DateStamp 3d6dd67c
+"}
+
+			buffer 3, 640, 480
+			color ,,130 : boxf : color 255, 255, 255
+			font "Courier", 12
+			pos 0, 0 : mes {"\n
+			Read failure on internal hard drive
+
+			No bootable devices--strike F1 to retry boot, F2 for setup utility
+			"}
+
+			buffer 4, 640, 400
+			picload "RSoD.gif"
+
+			buffer 5, 640, 480
+			cls 4
+			font msgothic, 16
+			color 255, 255, 255
+			pos 5, 0 : mes {"\n
+			ご迷惑をおかけしております。Windowsが正しく開始できませんでした。最近のハー
+			ドウェアまたはソフトウェアの更新が原因の可能性があります。
+
+			コンピュータが応答しない場合，予期せず再開始した場合，ファイルとフォルダを保護
+			のため自動的にシャットダウンした場合，前回正常起動時の構成を選択して，正しく機
+			能した最新の設定に戻してください。
+
+			前回の試みが電源障害，あるいは電源ボタンやリセットボタンを押して中断された場合，
+			または原因不明の場合は，通常起動を選択してください。
+
+			　　セーフ　モード
+			　　セーフ　モードとネットワーク
+			　　セーフ　モードとコマンド　プロンプト
+
+			　　前回正常起動時の構成 (正しく動作した最新の設定)
+
+			　　
+
+			上矢印キーと下矢印キーを使って項目を選択し，Enter キーを押してください。
+			
+			
+			"}
+
+			boxf 6, 291, 220, 307
+			color : pos 37, 292 : mes "Windows　を通常起動する"
+			
+			buffer 6, 640, 480
+			font msgothic, 16
+			color , , 255 : boxf
+
+			color 255, 255, 255
+			boxf 298, 134, 390, 156
+			color ,,2550
+			pos 318, 138 : mes "Windows"
+			color 255, 255, 255
+			pos 81, 177 : mes {"\n
+			例外OE が 03E7:0xFF9CDE97 で発生しました。
+			現在のアプリケーションを終了します。
+
+			＊　どれかキーを押すと、現在のアプリケーションは強制終了されます。
+			＊　Ctrl+Alt+Del キーをもう一度押すと、コンピュータは再起動します。
+			　　 アプリケーションで保存していないデータは全て失われます。
+
+			　　　　　　　　　　　　　　　　どれかｷｰを押すと、続行します。
+			"}
+
+			buffer 7, 640, 480
+			color ,,130 : boxf : color 255, 255, 255
+			font "Courier", 12
+			pos 0, 0 : mes {"
+
+			STOP: c0000218 unknown Hard Error
+			Unknown HardError
+			Beginning dump of physical memory
+			Physical memory dump complete.
+			Contact your system administrator or technical support group for
+			further assistance.
+			"}
+
+
+			buffer 8, 640, 480
+			color ,,130 : boxf : color 255, 255, 255
+			font "Courier", 12
+			pos 0, 0 : mes {"\n
+			A problem has been detected and windows has been shut down to prevent
+			damage to your computer.
+			
+			If this is the first time you've seen this stop error screen,
+			restart your computer. If this screen appears again,follow these steps:
+			
+			Run a system diagnostic utility supplied by your hardware manufacturer.
+			In particular,run a memory check, and check for faulty or mismatched
+			memory.  Try changing video adapters.
+			
+			Disable or remove any newly installed hardware and drivers. Disable or
+			remuve any newly installed software.  If you need to use safe Mode to
+			remove or disable components, restartyour computer, press F8 to select
+			Advanced Startup Options, and thenselect safe mode.
+			
+			Technical information:
+			
+			*** STOP: 0x0000007F(0x0000000D,0x00000000,0x00000000,0x00000000)
+			
+			Beginning dump of physical memory
+			Physical memory dump complete.
+			Contact your system administrator or technical support group for
+			further assistance.
+			"}
+		
+			buffer 9, 640, 480
+			color ,,130 : boxf : color 255, 255, 255
+			font "Courier", 12
+			pos 0, 0 : mes {"\n
+			A process or thread crucial to system operation has unexpectedly excited
+or been terminated.
+			"}
+			
+			
+			if prm == "s"{
+				bgscr 0, dx, dy, 2, 0, 0
+				title ""+sctitle
+				tmx = ginfo_mx					//マウスの横の位置を保持
+				tmy = ginfo_my					//マウスの縦の位置を保持
+				onkey *Key
+				onclick *Click
+			} else {
+				buffer 1, dx, dy, 2, 0, 0
+				title ""+sctitle
+			}
+			
+			// --- スクリーンセーバー開始前 ---
+			
+				randomize
+				
+			// --------------------------------
+			gsel 0
+			oncmd gosub *TimerLoop, WM_TIMER
+			SetTimer hwnd, 1, ms, 0
+			stop
+			swbreak
+
+    swend
+	wrunend
+
+*TimerLoop
+
+	if prm == "s" {
+		//マウスを動かしたかキーボードを押したか
+		if (abs(tmx-ginfo_mx)>=thrm)|(abs(tmy-ginfo_my)>=thrm){
+			wrunend
+		}
+	}else{
+		gsel 1
+	}
+	// --- フルスクリーン描画 ---
+
+		if count = 0 {
+			pos 0, 0
+			lorm = rm
+			do
+				rm = rnd(8)
+			until lorm != rm
+			switch rm
+				case 0
+					gzoom dx, dy, 2, 0, 0, 640, 480, 1
+					swbreak
+				case 1
+					gzoom dx, dy, 3, 0, 0, 640, 480, 1//
+					swbreak
+				case 2
+					gzoom dx, dy, 4, 0, 0, 640, 400, 1		//0
+					swbreak
+				case 3
+					gzoom dx, dy, 5, 0, 0, 640, 480, 1		//o
+					swbreak
+				case 4
+					gzoom dx, dy, 6, 0, 0, 640, 480, 1			//o
+					swbreak
+				case 5
+					gzoom dx, dy, 7, 0, 0, 640, 480, 1//
+					swbreak
+				case 6
+					gzoom dx, dy, 8, 0, 0, 640, 480, 1//
+					swbreak
+				case 7
+					gzoom dx, dy, 9, 0, 0, 640, 480, 1//
+					swbreak
+			swend
+		}
+		count++
+		if count == 2000 : count = 0
+
+	// --------------------------
+
+	if prm =="s" {
+		tmx = ginfo_mx					//マウスの横の位置を保持
+    	tmy = ginfo_my					//マウスの縦の位置を保持
+	}
+    
+    if prm == "p" {
+	    gsel 0
+	    gmode 1
+		pos 0, 0 : gzoom 152, 112, 1, 0, 0, dx, dy
+		gsel 1
+    }
+
+    if start == 0 : start = 1 : gsel 0 , 2
+	return
+
+*Key
+*Click
+*owari
+	wrunend
